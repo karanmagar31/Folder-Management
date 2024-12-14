@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Create Folder Button -->
+    <div class="d-flex justify-content-center mb-4">
+        <a href="{% url 'create_folder' %}">
+            <button class="btn btn-success btn-lg">
+                <i class="fas fa-plus-circle"></i> Create Folder
+            </button>
+        </a>
+    </div>
+
+    <!-- Folder List -->
+    <div class="row justify-content-center">
+        {% if folders %}
+            {% for folder in folders %}
+                <div class="col-md-3 mb-4">
+                    <div class="card shadow-sm">
+                        <a href="{% url 'folder_view' folder.id %}" class="text-decoration-none text-dark">
+                            <div class="card-body text-center">
+                                {% if folder.is_file %}
+                                    <div class="folder-icon mb-3">
+                                        <i class="fas fa-file fa-3x text-danger"></i> <!-- File Icon -->
+                                    </div>
+                                {% else %}
+                                    <div class="folder-icon mb-3">
+                                        <i class="fas fa-folder-open fa-3x text-success"></i> <!-- Folder Icon -->
+                                    </div>
+                                {% endif %}
+                                <h5 class="card-title">{{ folder.name }}</h5>
+                            </div>
+                        </a>
+
+                        <!-- Edit and Delete Buttons -->
+                        <div class="card-footer text-center">
+                            <!-- Edit Button -->
+                            <a href="{% url 'update_folder' folder.id %}" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+
+                            <!-- Delete Button (POST request) -->
+                            <form method="POST" action="{% url 'delete_folder' folder.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center">No folders available. Please create a folder.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .folder-icon {
+        font-size: 48px;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-title {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .card-footer {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+</style>
+{% endblock %}

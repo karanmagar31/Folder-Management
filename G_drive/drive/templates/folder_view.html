@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ folder.name }} - Folder View{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="mb-4">{{ folder.name }} - Folder View</h2>
+
+        <!-- Back and Create Folder Buttons in a Single Row -->
+        <div class="mb-4 d-flex justify-content-between">
+            <!-- Back Button (to parent folder) -->
+            <div>
+                {% if folder.parent_folder %}
+                    <a href="{% url 'folder_view' folder.parent_folder.id %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back 
+                    </a>
+                {% else %}
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                {% endif %}
+            </div>
+
+            <!-- Create a Subfolder Button -->
+            <div>
+                <a href="{% url 'create_subfolder' folder.id %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-folder-plus"></i> Create folder
+                </a>
+            </div>
+        </div>
+
+        <h3>Subfolders:</h3>
+        <div class="row">
+            {% for subfolder in subfolders %}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ subfolder.name }}</h5>
+                            <p class="card-text">This is a subfolder inside {{ folder.name }}.</p>
+
+                            <!-- View Subfolder Button -->
+                            <a href="{% url 'folder_view' subfolder.id %}" class="btn btn-outline-primary mb-2">
+                                View Subfolder
+                            </a>
+
+                            <!-- Edit Button -->
+                            <a href="{% url 'update_folder' subfolder.id %}" class="btn btn-warning btn-sm mb-2">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+
+                            <!-- Delete Button (POST method to delete folder) -->
+                            <form method="POST" action="{% url 'delete_folder' subfolder.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info" role="alert">
+                        No subfolders available.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

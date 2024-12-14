@@ -1,0 +1,15 @@
+{% if parent_folder.folder_set.all %}
+    <ul>
+        {% for subfolder in parent_folder.folder_set.all %}
+            <li>
+                <a href="{% url 'file_list' subfolder.id %}">{{ subfolder.name }}</a>
+                <a href="{% url 'create_folder_with_parent' subfolder.id %}">Create Folder inside</a>
+                <a href="{% url 'update_folder' subfolder.id %}">Edit</a>
+                <a href="{% url 'delete_folder' subfolder.id %}">Delete</a>
+
+                <!-- Recursively render subfolders -->
+                {% include 'subfolder_list.html' with parent_folder=subfolder %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
